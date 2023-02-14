@@ -1,0 +1,31 @@
+{
+  "properties" : {
+    "id" : {
+      "type"  : "keyword"
+    },
+    "first_name": {
+      "type"  : "text"
+    },
+    "last_name": {
+      "type"  : "text"
+    },
+    "email" : {
+      "type"  : "text"
+    },
+    "field_of_work" : {
+      "type"  : "text"
+    },
+    "education_level" : {
+      "type"  : "integer"
+    },
+    "country" : {
+      "type"  : "text"
+    },
+    "city" : {
+      "type"  : "text"
+    },
+    "address" : {
+      "type"  : "text"
+    }
+  }
+}

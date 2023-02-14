@@ -1,0 +1,1 @@
+INSERT INTO candidates (id, first_name, last_name, email, field_of_work, education_level, country, city, address) VALUES ('0', 'Milos', 'Milosevic', 'milosmilosevic@testmail.com', 'finance', 7, 'Serbia', 'Belgrade', 'Pirotska 3');
