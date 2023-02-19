@@ -26,6 +26,12 @@
     },
     "address" : {
       "type"  : "text"
+    },
+    "cv" : {
+      "type"  : "binary"
+    },
+    "cover_letter" : {
+      "type"  : "binary"
     }
   }
 }

@@ -36,4 +36,8 @@ public class Candidate {
     protected String city;
     @Column(name = "address", nullable = false)
     protected String address;
+    @Column(name = "cv_location", nullable = false)
+    protected String cv_location;
+    @Column(name = "cover_location", nullable = false)
+    protected String cover_location;
 }

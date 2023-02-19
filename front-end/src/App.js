@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 import { Route, Routes } from "react-router-dom";
 import Homepage from "./pages/Homepage";
+import SearchPage from "./pages/SearchPage";
 import Layout from "./components/Layout/Layout";
 import React from "react";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
@@ -32,6 +33,7 @@ function App() {
           <Layout>
             <Routes>
               <Route path="/" element={<Homepage />} />
+              <Route path="/search" element={<SearchPage />} />
             </Routes>
           </Layout>
           <ReactQueryDevtools initialIsOpen={false} />

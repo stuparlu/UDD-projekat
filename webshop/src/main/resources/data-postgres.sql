@@ -1,1 +1,1 @@
-INSERT INTO candidates (id, first_name, last_name, email, field_of_work, education_level, country, city, address) VALUES ('0', 'Milos', 'Milosevic', 'milosmilosevic@testmail.com', 'finance', 7, 'Serbia', 'Belgrade', 'Pirotska 3');
+INSERT INTO candidates (id, first_name, last_name, email, field_of_work, education_level, country, city, address, cv_location, cover_location) VALUES ('0', 'Milos', 'Milosevic', 'milosmilosevic@testmail.com', 'finance', 7, 'Serbia', 'Belgrade', 'Pirotska 3', 'documents/cv/0_cv.pdf', 'documents/covers/0_cover.pdf');
