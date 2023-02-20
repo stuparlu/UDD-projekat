@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.elasticsearch.common.geo.GeoPoint;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Setting;
 
@@ -38,4 +39,6 @@ public class CandidateDocument {
     protected String cv;
 
     protected String cover_letter;
+
+    protected GeoPoint location;
 }

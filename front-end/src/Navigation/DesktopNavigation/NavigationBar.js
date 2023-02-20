@@ -58,6 +58,9 @@ function NavigationBar() {
             <Button component={NavLink} to="/kompanije" variant="text">
               <Typography variant="body1">Kompanije</Typography>
             </Button>
+            <Button component={NavLink} to="/search" variant="text">
+              <Typography variant="body1">Pretraga</Typography>
+            </Button>
           </Box>
           {isLoggedIn && (
             <Button

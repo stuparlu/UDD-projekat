@@ -2,6 +2,7 @@ package com.example.webshop.mapper;
 
 import com.example.webshop.document.CandidateDocument;
 import com.example.webshop.helper.IndexUtil;
+import com.example.webshop.helper.SearchUtil;
 import com.example.webshop.model.Candidate;
 
 public class CandidateMapper {
@@ -30,7 +31,8 @@ public class CandidateMapper {
                 candidate.getCity(),
                 candidate.getAddress(),
                 IndexUtil.readFile(candidate.getCv_location()),
-                IndexUtil.readFile(candidate.getCover_location())
+                IndexUtil.readFile(candidate.getCover_location()),
+                SearchUtil.mappedPoint(candidate.getCity())
         );
     }
 }

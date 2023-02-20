@@ -32,6 +32,10 @@
     },
     "cover_letter" : {
       "type"  : "binary"
+    },
+
+    "location" : {
+      "type" : "geo_point"
     }
   }
 }
