@@ -28,10 +28,12 @@
       "type"  : "text"
     },
     "cv" : {
-      "type"  : "binary"
+      "type"  : "text",
+      "analyzer" : "serbian"
     },
     "cover_letter" : {
-      "type"  : "binary"
+      "type"  : "text",
+      "analyzer" : "serbian"
     },
 
     "location" : {

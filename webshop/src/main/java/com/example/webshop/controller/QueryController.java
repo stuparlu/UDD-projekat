@@ -9,9 +9,13 @@ import com.example.webshop.model.Candidate;
 import com.example.webshop.repository.CandidateRepository;
 import com.example.webshop.service.CandidateDocumentService;
 import com.example.webshop.service.ElasticsearchService;
+import org.apache.pdfbox.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -46,6 +50,34 @@ public class QueryController {
         try {
             List<SearchResponseDTO> responseData = elasticsearchService.executeSearchQuery(searchQueryDto);
             return responseData;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @GetMapping(value = "/getCvByID/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> downloadPDF(@PathVariable Long id) throws IOException {
+        try {
+            byte [] bytes = elasticsearchService.getCVByID(id);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(ContentDisposition.builder("inline").filename("filename.pdf").build());
+            headers.setContentLength(bytes.length);
+            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @GetMapping(value = "/getCoverByID/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> downloadCover(@PathVariable Long id) throws IOException {
+        try {
+            byte [] bytes = elasticsearchService.getCoverByID(id);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(ContentDisposition.builder("inline").filename("filename.pdf").build());
+            headers.setContentLength(bytes.length);
+            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
         } catch (Exception e) {
             return null;
         }

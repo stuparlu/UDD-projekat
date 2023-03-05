@@ -23,7 +23,7 @@ function FullInfoSearchDisplay({props}) {
 
   const onSuccess = (response) => {
     console.log("SUCCESS", response.data);
-    // navigate("/searchSummary", {state: {data: response.data}});
+    navigate("/searchSummary", {state: {data: response.data}});
   };
   
   const onError = (err) => {
@@ -82,7 +82,7 @@ function FullInfoSearchDisplay({props}) {
         alignItems="center"
         justifyContent="center"
         sx={{
-          margin: "2rem 10rem",
+          margin: "2rem 20rem",
           padding: "2rem 2rem",
           backgroundColor: "#FFFFFF",
           borderRadius: "15px",

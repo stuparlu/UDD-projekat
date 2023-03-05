@@ -7,6 +7,7 @@ import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,10 +25,9 @@ public final class SearchUtil {
         if (fieldName.equals("education_level")) {
             return QueryBuilders.matchQuery(fieldName, Integer.parseInt(fieldValue));
         } else if (fieldName.equals("cv") || fieldName.equals("cover_letter")) {
-            return QueryBuilders.termQuery(fieldName, fieldValue);
+            return QueryBuilders.matchPhraseQuery(fieldName, fieldValue).slop(2);
         }
         MatchPhraseQueryBuilder builder = QueryBuilders.matchPhraseQuery(fieldName, fieldValue);
-//        builder.analyzer("serbian");
         return builder;
     }
 
@@ -59,7 +59,7 @@ public final class SearchUtil {
                 }
             } else if (field.equals("cv") || field.equals("cover_letter")) {
                 if (dto.getSearchTerm(field) != null && !dto.getSearchTerm(field).equals("")) {
-                    String encodedString = Base64.getEncoder().encodeToString(dto.getSearchTerm(field).getBytes());
+                    String encodedString = dto.getSearchTerm(field);
                     builders.add(getQueryBuilder(field, encodedString));
                 }
             } else if (field.equals("location")) {
@@ -95,6 +95,17 @@ public final class SearchUtil {
 
         try {
             SearchSourceBuilder source = new SearchSourceBuilder().postFilter(builder);
+
+
+            HighlightBuilder highlightBuilder = new HighlightBuilder();
+            HighlightBuilder.Field cvHighlightField = new HighlightBuilder.Field("cv");
+            cvHighlightField.highlighterType("plain");
+            highlightBuilder.field(cvHighlightField);
+            HighlightBuilder.Field coverHighlightField = new HighlightBuilder.Field("cover_letter");
+            coverHighlightField.highlighterType("plain");
+            highlightBuilder.field(coverHighlightField);
+            source.highlighter(highlightBuilder);
+
             SearchRequest searchRequest = new SearchRequest("candidates");
             searchRequest.source(source);
             return  searchRequest;

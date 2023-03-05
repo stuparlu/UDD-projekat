@@ -11,4 +11,6 @@ public interface ElasticsearchService {
 
     ResponseEntity<String> populateIndexFromDatabase() throws Exception;
 
+    public byte[] getCVByID(Long id);
+    public byte[] getCoverByID(Long id);
 }
