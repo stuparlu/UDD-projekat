@@ -96,6 +96,7 @@ function SearchSummaryPage({ props }) {
               position: "relative",
               borderRadius: "15px",
               margin: "1rem 0rem",
+              height: "15rem"
             }}
           >
             <Box

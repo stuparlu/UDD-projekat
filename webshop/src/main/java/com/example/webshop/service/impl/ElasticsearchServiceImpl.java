@@ -7,25 +7,22 @@ import com.example.webshop.model.Candidate;
 import com.example.webshop.repository.CandidateDocumentRepository;
 import com.example.webshop.repository.CandidateRepository;
 import com.example.webshop.service.ElasticsearchService;
-import org.apache.pdfbox.io.IOUtils;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.elasticsearch.search.SearchHit;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ElasticsearchServiceImpl implements ElasticsearchService {
@@ -46,31 +43,47 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
     @Override
     public List<SearchResponseDTO> executeSearchQuery(SearchQueryDTO searchQuery) throws Exception {
-        SearchRequest request = SearchUtil.buildSearchRequest(searchQuery);
+        NativeSearchQuery request = SearchUtil.buildSearchRequest(searchQuery);
         if (request == null) {
             LOG.error("Search request creation failed");
             return null;
         }
 
         try {
-            SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
-            SearchHit[] searchHits = response.getHits().getHits();
+            ElasticsearchRestTemplate template = new ElasticsearchRestTemplate(restHighLevelClient);
+            SearchHits<Candidate> searchHits = template.search(request, Candidate.class, IndexCoordinates.of("candidates"));
+            List<SearchHit<Candidate>> hits = searchHits.getSearchHits();
             List<SearchResponseDTO> dtoList = new ArrayList<>();
-            for (SearchHit hit : searchHits) {
-                Map<String, Object> source = hit.getSourceAsMap();
-                Map<String, HighlightField> highlightFields = hit.getHighlightFields();
+            for (SearchHit<Candidate> hit : hits) {
+                String id = hit.getId();
+                Candidate candidate = candidateRepository.getById(id);
+                String highlight = "";
+                List<String> cvHighlight = hit.getHighlightField("cv");
+                if (cvHighlight.size() > 0) {
+                    highlight = highlight.concat("CV:\n").concat(cvHighlight.get(0)).concat(", ");
+                }
+                List<String> coverHighlight = hit.getHighlightField("cover_letter");
+                if (coverHighlight.size() > 0) {
+                    highlight = highlight.concat("Cover Letter:\n").concat(coverHighlight.get(0));
+                }
+
+                if (highlight.length() > 0) {
+                    highlight = highlight.replace("<em>", "").replace("</em>", "");
+                } else {
+                    highlight = candidate.getFirst_name() + " " + candidate.getLast_name();
+                }
 
                 SearchResponseDTO responseDTO = new SearchResponseDTO(
-                        (String) source.get("id"),
-                        (String) source.get("first_name"),
-                        (String) source.get("last_name"),
-                        (String) source.get("email"),
-                        (String) source.get("field_of_work"),
-                        (Integer) source.get("education_level"),
-                        (String) source.get("country"),
-                        (String) source.get("city"),
-                        (String) source.get("address"),
-                        ""
+                        id,
+                        candidate.getFirst_name(),
+                        candidate.getLast_name(),
+                        candidate.getEmail(),
+                        candidate.getField_of_work(),
+                        candidate.getEducation_level(),
+                        candidate.getCountry(),
+                        candidate.getCity(),
+                        candidate.getAddress(),
+                        highlight
                         );
                 dtoList.add(responseDTO);
             }

@@ -2,18 +2,17 @@ package com.example.webshop.helper;
 
 import com.example.webshop.dto.SearchQueryDTO;
 import com.example.webshop.service.impl.IndexServiceImpl;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.*;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 
 public final class SearchUtil {
@@ -44,7 +43,7 @@ public final class SearchUtil {
             return new GeoPoint(0, 0);
         }
     }
-    public static SearchRequest buildSearchRequest(SearchQueryDTO dto) {
+    public static NativeSearchQuery buildSearchRequest(SearchQueryDTO dto) {
         if (dto == null) {
             return null;
         }
@@ -94,21 +93,19 @@ public final class SearchUtil {
         }
 
         try {
-            SearchSourceBuilder source = new SearchSourceBuilder().postFilter(builder);
-
-
             HighlightBuilder highlightBuilder = new HighlightBuilder();
             HighlightBuilder.Field cvHighlightField = new HighlightBuilder.Field("cv");
-            cvHighlightField.highlighterType("plain");
+            cvHighlightField.fragmentSize(75).numOfFragments(1);
             highlightBuilder.field(cvHighlightField);
             HighlightBuilder.Field coverHighlightField = new HighlightBuilder.Field("cover_letter");
-            coverHighlightField.highlighterType("plain");
+            coverHighlightField.fragmentSize(75).numOfFragments(1);
             highlightBuilder.field(coverHighlightField);
-            source.highlighter(highlightBuilder);
 
-            SearchRequest searchRequest = new SearchRequest("candidates");
-            searchRequest.source(source);
-            return  searchRequest;
+            NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withQuery(builder)
+                    .withHighlightFields(cvHighlightField,
+                            coverHighlightField).build();
+            return  searchQuery;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             return null;
