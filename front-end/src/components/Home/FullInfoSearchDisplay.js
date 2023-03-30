@@ -61,7 +61,21 @@ function FullInfoSearchDisplay({props}) {
 
 
   const MakeRequest = () => {
-    console.log("Making Request", firstNameQuery, lastNameQuery, educationLevelQuery, cvQuery, coverQuery, locationQuery,locationDistanceQuery);
+
+    if (
+      firstNameQuery == "" &&
+      lastNameQuery == "" &&
+      educationLevelQuery == "" &&
+      cvQuery == "" &&
+      coverQuery == "" &&
+      locationQuery == "" &&
+      locationQuery == ""
+    ) {
+      alert("Morate uneti bar jedno polje");
+      return;
+    }
+
+    console.log("Making Request", firstNameQuery, lastNameQuery, educationLevelQuery, cvQuery, coverQuery, locationQuery, locationQuery);
     searchMutation();
     console.log(isLoading);
     console.log(searchMutation);

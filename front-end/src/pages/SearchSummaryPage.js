@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, NavLink } from "react-router-dom";
 import {
   Box,
   Card,
@@ -85,10 +85,27 @@ function getCoverForId(id) {
 
 function SearchSummaryPage({ props }) {
   const { state } = useLocation();
-  console.log("Entered ", state.data);
+  console.log("Entered ", state.data.length);
 
   return (
     <Fragment>
+      {state.data.length === 0 && 
+        <Card
+        sx={{
+          position: "relative",
+          borderRadius: "15px",
+          margin: "1rem 20rem",
+          padding: "3rem 5rem",
+          height: "15rem"
+        }}>
+          <Stack direction="column" spacing={5} alignItems="center" justifyContent="center">
+            <Typography variant="h4" color="primary" sx={{ paddingRight: "1rem", fontWeight: "bold"}}>Nema Rezultata</Typography>
+            <Button margin="2rem" variant="contained" sx={{width: "10rem", height: "3rem"}} component={NavLink} to="/search">
+                      Nazad na pretragu
+            </Button>
+          </Stack>
+        </Card>
+      }
       <Container sx={{ padding: "2rem 0rem" }}>
         {state.data.map((candidate) => (
           <Card
